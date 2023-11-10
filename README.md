@@ -1,7 +1,7 @@
 # aix_deeplearning
 
 ## Title
-  Markowitz 모델과 머신러닝을 이용한 포트폴리오 최적화
+  Markowitz 모델과 머신러닝을 활용한 포트폴리오 최적화
   
 ### Members
   문서진, 컴퓨터소프트웨어학부 2021019834, sj1226m@hanyang.ac.kr
