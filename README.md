@@ -1,7 +1,7 @@
 # aix_deeplearning
 
 ## Title
-  항공사 고객 만족 여부 예측
+  Markowitz 모델과 머신러닝을 이용한 포트폴리오 최적화
   
 ### Members
   문서진, 컴퓨터소프트웨어학부 2021019834, sj1226m@hanyang.ac.kr
@@ -16,8 +16,8 @@
 ### Proposal (Option A)
   -Motivation: Why are you doing this?
   
-    머신러닝, 딥러닝 등 다양한 예측 도구를 이용해 모델링하기 좋고, 새로운 feature를 만들어가며 분석하기에 흥미로워보여 주제를 정하게 되었음.
+    머신러닝, 딥러닝 모델을 통해 주식 시계열 데이터를 분석하여 포트폴리오를 모델링해보고, 투자 전략 과정에서 머신러닝을 활용하는 것이 과연 적합할 것인가에 대해 알아보고 싶다.
   
   -What do you want to see at the end?
   
-    성별, 나이, Class, 비행 거리 등을 독립변수로 삼아 satisfaction이라는 종속변수를 구하고자 함.
+    다양한 주식 시계열 데이터를 input 데이터로 활용하여, 리스크 대비 수익률이 가장 높은 최적의 포트폴리오를 도출해 내는것이 목적이다.
