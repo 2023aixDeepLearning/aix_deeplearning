@@ -35,4 +35,26 @@
        - 차분 (Differencing): 연이은 관측값들의 차이를 계산해 시계열 수준에서 나타나는 변화를 제거하여, 시계열의 평균 변화를 일정하게 만든다.
       
    - Step 1
-     - p, d, q 추정 
+     - p, d, q 추정
+       
+#### GRU (Gated Recurrent Unit) 모델
+<p align="center">
+  <img 
+    src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/54359232/244cc10e-1537-4a11-a7f6-a893fa61043e" 
+    width="300"
+    />
+</p>
+
+   - GRU는 LSTM의 장기 의존성 문제에 대한 해결책을 유지하면서, 은닉 상태를 업데이트하는 계산을 줄여 연산 속도를 개선했다.
+   - ##### LSTM과 GRU의 차이점
+     - LSTM에는 출력, 입력, 삭제를 담당하는 3개의 게이트가 존재한다.
+     - GRU의 경우, 업데이트와 리셋을 담당하는 2개의 게이트만 존재한다.
+     - 따라서 LSTM 대비 학습 속도는 빠르면서, 비슷한 성능을 보인다.
+   - Reset Gate(리셋 게이트)는 이전 은닉 상태(h<sub>t-1</sub>)를 얼마나 잊을지를 결정한다.
+   - Update Gate(업데이트 게이트)는 이전 은닉 상태(h<sub>t-1</sub>)와 새로운 정보(x<sub>t</sub>)간의 균형을 결정한다.
+   - 경험적으로 데이터의 양이 적은 경우 GRU, 데이터의 양이 많은 경우 LSTM을 더 선호한다. (매개변수의 개수 차이)
+   - 텐서플로우의 케라스의 경우 아래와 같이 GRU의 구현을 지원한다.
+     - ```python
+       model.add(GRU(hidden_size, input_shape=(timesteps, input_dim)))
+       ```
+       
