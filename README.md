@@ -33,6 +33,6 @@
      - MA(q) 모델: q차수의 이동 평균 모델로, 과거 예측 오차를 이용하여 값을 예측한다.
      - I(d): d차수의 차분을 나타낸다. 원래의 시계열 데이터를 예측과 분석을 쉽게 하기 위해 정상 시계열 데이터로 변환하는 과정이다.
        - 차분 (Differencing): 연이은 관측값들의 차이를 계산해 시계열 수준에서 나타나는 변화를 제거하여, 시계열의 평균 변화를 일정하게 만든다.
-      
-   - Step 1
-     - p, d, q 추정 
+
+Reference
+Peng.Chuyin, A Study of Wordle Reported Outcome Data Based on ARIMA-XGBoost Model
