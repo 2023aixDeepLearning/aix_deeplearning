@@ -78,7 +78,7 @@
 
 ### Code
 1. 필요한 모듈을 가져온다.
-```
+```python
 import warnings
 warnings.filterwarnings('ignore')
 import numpy as np
@@ -95,12 +95,12 @@ from IPython.display import clear_output
 ```
 2. 주식 데이터를 가져온다.
    - FinanceDataReader 사용을 위해 설치 후 import 한다.
-```
+```python
 !pip install -U finance-datareader
 import FinanceDataReader as fdr
 ```
   -  코스피 주식 중 2000년 이전에 상장된 주식들을 선정하였다.
-```
+```python
 stock_name = fdr.StockListing('KOSPI')['Name'].to_list()
 stock_code = fdr.StockListing('KOSPI')['Code'].to_list()
 
@@ -108,11 +108,11 @@ print(stock_name)
 print(stock_code)
 ```
   - 주식의 종가를 바탕으로 포트폴리오 투자를 진행하기 위해 각 주식의 2000년 이후의 종가 데이터를 가져온다.
-```
+```python
 my_portfolio = ['삼성전자', 'SK하이닉스','POSCO홀딩스', '현대차', '기아', '삼성SDI', '현대모비스', 'LG', '카카오', 'SK텔레콤', '기업은행', 'S-Oil', 'KT']
 len(my_portfolio)
 ```
-```
+```python
 stock_dict = dict(zip(stock_name, stock_code))
 
 stock_df = pd.DataFrame()
@@ -124,11 +124,11 @@ for stock in my_portfolio:
 stock_df
 ```
   - 10 근무일 주기로 포트폴리오 리밸런싱할 것을 고려하여, 10근무일 주기의 데이터를 가져온다. 근무일은 주말과 휴일을 제외한 기간으로 매수, 매도가 가능한 기간이다. 10 근무일은 약 2주정도이다.
-```
+```python
 df = stock_df.iloc[::10,:]
 df
 ```
-```
+```python
 def get_returns(result):
   ans = [0]
   for i in range(1, len(result)):
@@ -145,7 +145,7 @@ def get_risk(returns):
   return (ans/n)**(1/2)
 ```
   - 각 종목별 총 기간의 평균 수익과 변동성을 확인한다.
-```
+```python
 mean_return_of_each_asset = []
 risk_of_each_asset = []
 
@@ -158,12 +158,12 @@ for i in my_portfolio:
 print(mean_return_of_each_asset)
 print(risk_of_each_asset)
 ```
-```
+```python
 pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of_each_asset},index=my_portfolio)
 ```
 3. 포트폴리오 클래스 생성
    - 포트폴리오 최적화는 마코비츠 모델에 따라 진행한다.
-```
+```python
 class Markowitz_model:
   def __init__(self, params):
     self.params = params
@@ -427,7 +427,7 @@ risk_free_rate는 주식에 투자가 아닌 은행에 넣었을 때의 예상 �
 cov_len은 최적화 식의 공분산으로 사용할 값의 길이를 지정한다. cov_len을 10으로 설정하면 10 기간 동안의 공분산을 사용한다.
 
 start_point는 투자를 시작하는 시점을 지정한다. 현재 데이터프레임에서의 start_point가 400일 경우, 2016년 3월부터 2022년 말까지 투자하는 것을 시뮬레이션한다.
-```
+```python
 params1 = {'r_bar' : 'MA5',
            'risk_free_rate' : 0.00125,
            'cov_len' : 10,
@@ -437,7 +437,7 @@ model1 = Markowitz_model(params1)
 result1 = model1.simulate(df[my_portfolio])
 ```
 model2는 model1과 다른 조건을 동일하게 지정하고, 기대 수익 예측에 ARIMA 모델을 사용한다. 여기서 사용하는 ARIMA 모델의 (p, d, q)의 값은 (1, 1, 1)이다.
-```
+```python
 params2 = {'r_bar' : 'ARIMA',
            'ARIMA_order' : (1, 1, 1),
            'risk_free_rate' : 0.00125,
@@ -448,7 +448,7 @@ model2 = Markowitz_model(params2)
 result2 = model2.simulate(df[my_portfolio])
 ```
 model3는 기대수익의 예측값에 XGBoost를 사용한다. 이전 5 기간의 수익률을 각각의 feature로 지정하고, 자기회귀의 결과를 예측값으로 사용한다.
-```
+```python
 hyperparameters = {
     'n_estimators': 30,
     'learning_rate': 0.1,
@@ -471,7 +471,7 @@ model3 = Markowitz_model(params3)
 result3 = model3.simulate(df[my_portfolio])
 ```
 model4는 기대수익의 예측값으로 순환신경망 모델인 GRU를 사용한다. 이때 input_shape를 (5, 1)로 지정하였다.
-```
+```python
 GRU_model = Sequential()
 GRU_model.add(GRU(32, input_shape=(5,1)))
 GRU_model.add(Dense(16))
@@ -490,7 +490,7 @@ result4 = model4.simulate(df[my_portfolio])
 ```
 5. 각 모델에서 포트폴리오 수익률 확인
 total return은 (마지막 시점의 자산 총량 - 첫 시점의 자산 총량)/첫 시점의 자상 총량의 퍼센트값으로 사용한다. 예를들어 초기 투자 금액이 1000원, 마지막 기간의 자산 총액이 2000원이면 수익률은 100%가 된다.
-```
+```python
 returns1 = get_returns(result1)
 plt.plot(returns1)
 plt.plot([0]*len(result1))
@@ -529,7 +529,7 @@ model3_result = pd.DataFrame({'model1' : result3})
 model4_result = pd.DataFrame({'model1' : result4})
 ```
 각 모델을 통해 변화한 자산의 정보를 csv파일로 각각 저장한다.
-```
+```python
 from google.colab import drive
 drive.mount('/content/drive')
 
