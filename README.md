@@ -33,6 +33,10 @@
      - MA(q) 모델: q차수의 이동 평균 모델로, 과거 예측 오차를 이용하여 값을 예측한다.
      - I(d): d차수의 차분을 나타낸다. 원래의 시계열 데이터를 예측과 분석을 쉽게 하기 위해 정상 시계열 데이터로 변환하는 과정이다.
        - 차분 (Differencing): 연이은 관측값들의 차이를 계산해 시계열 수준에서 나타나는 변화를 제거하여, 시계열의 평균 변화를 일정하게 만든다.
+      
+   - ARIMA model development process
+![ARIMA-model-development-process-ARIMA-autoregressive-integrated-moving-average](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/5778ab60-7d8e-4c19-a791-4315d3095f3f)
 
 Reference
-Peng.Chuyin, A Study of Wordle Reported Outcome Data Based on ARIMA-XGBoost Model
+Peng.Chuyin, Mo.Zhengma, Zhang.Xinyu, A Study of Wordle Reported Outcome Data Based on ARIMA-XGBoost Model, IEEE, 774-779 Aug, 2023
+Linlin Zhao, Jasper Mbachu, Huirong Zhang, Forecasting residential building costs in New Zealand using a univariate approach, IJEBM, Volume 11:1-13, 2019
