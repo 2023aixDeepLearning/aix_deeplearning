@@ -24,9 +24,21 @@
 
 ### Datasets  
 파이썬의 FinanceDataReader 모듈을 이용해 코스피에 상장된 주식 데이터를 가져온다.
-- 데이터 구조
-  - ...
+1. 필요한 모듈을 import 한다.
+```python
+!pip install -U finance-datareader
+import FinanceDataReader as fdr
+```
+```
+Collecting finance-datareader
+  Downloading finance_datareader-0.9.66-py3-none-any.whl (23 kB)  
+  
+...  
 
+Installing collected packages: requests-file, finance-datareader
+Successfully installed finance-datareader-0.9.66 requests-file-1.5.1  
+```
+2. 
 ### Methodology
 > ARIMA, XGBoost, GRU세가지 방식으로 포트폴리오를 예측하여 가장 성능이 좋은 모델을 선정하였다. 
 #### ARIMA (AutoRegressive Integrated Moving Average) 모델
