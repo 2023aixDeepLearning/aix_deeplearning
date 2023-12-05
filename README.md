@@ -38,7 +38,73 @@ Collecting finance-datareader
 Installing collected packages: requests-file, finance-datareader
 Successfully installed finance-datareader-0.9.66 requests-file-1.5.1  
 ```
-2. 
+2. 파이썬의 FinanceDataReader 모듈을 이용해 코스피에 상장된 주식 데이터를 가져온다.
+```python
+stock_name = fdr.StockListing('KOSPI')['Name'].to_list()
+stock_code = fdr.StockListing('KOSPI')['Code'].to_list()
+
+print(stock_name[0:20])
+print(stock_code[0:20])
+```
+```
+['삼성전자', 'LG에너지솔루션', 'SK하이닉스', '삼성바이오로직스', '삼성전자우', 'POSCO홀딩스', '현대차', '기아', 'LG화학', 'NAVER', '삼성SDI', '포스코퓨처엠', '셀트리온', '카카오', '삼성물산', '현대모비스', 'KB금융', '신한지주', 'LG전자', '삼성생명']
+['005930', '373220', '000660', '207940', '005935', '005490', '005380', '000270', '051910', '035420', '006400', '003670', '068270', '035720', '028260', '012330', '105560', '055550', '066570', '032830']
+```
+3. 코스피 주식 중 2000년 이전에 상장된 주요 주식들을 선정하였다.
+```python
+my_portfolio = ['삼성전자', 'SK하이닉스','POSCO홀딩스', '현대차', '기아', '삼성SDI', '현대모비스', 'LG', '카카오', 'SK텔레콤', '기업은행', 'S-Oil', 'KT']
+len(my_portfolio)
+```
+```
+13
+```
+4. 주식의 종가를 바탕으로 포트폴리오 투자를 진행하기 위해 각 주식의 2000년 이후의 종가 데이터를 가져온다.
+```python
+stock_dict = dict(zip(stock_name, stock_code))
+
+stock_df = pd.DataFrame()
+
+for stock in my_portfolio:
+    stock_df[stock] = fdr.DataReader(stock_dict[stock], '2000-01-01', '2023-01-01')['Close']
+
+
+stock_df
+```
+(TODO: 결과 테이블 넣을 것)
+5. 10 영업일 주기로 포트폴리오 리밸런싱할 것을 고려하여, 10 영업일 주기의 데이터를 가져온다. 영업일은 주말과 휴일을 제외한 기간으로 매수, 매도가 가능한 기간이다. 10 영업일은 약 2주이다.
+```python
+df = stock_df.iloc[::10,:]
+df
+```
+(TODO: 결과 테이블 넣을 것)
+6. 각 종목 별 총 기간의 평균 수익과 변동성을 확인한다.
+```python
+def get_returns(result):
+  ans = [0]
+  for i in range(1, len(result)):
+    ans.append((result[i]-result[i-1])/result[i-1])
+  return ans
+def get_mean_return(returns):
+  return sum(returns)/len(returns)
+def get_risk(returns):
+  n = len(returns)
+  mean = sum(returns)/n
+  ans = 0
+  for i in range(n):
+    ans += (returns[i]-mean)**2
+  return (ans/n)**(1/2)
+
+mean_return_of_each_asset = []
+risk_of_each_asset = []
+
+for i in my_portfolio:
+
+  ret = get_returns(list(df[i]))
+  mean_return_of_each_asset.append(get_mean_return(ret))
+  risk_of_each_asset.append(get_risk(ret))
+
+pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of
+```
 ### Methodology
 > ARIMA, XGBoost, GRU세가지 방식으로 포트폴리오를 예측하여 가장 성능이 좋은 모델을 선정하였다. 
 #### ARIMA (AutoRegressive Integrated Moving Average) 모델
