@@ -383,25 +383,25 @@ expected return, covariance를 이용하여 포트폴리오 최적화를 진행�
 
 변수:
 
-&nbsp;weights : 각 주식별 포트폴리오 비중의 벡터 [w1, w2, ...]
+&nbsp;&nbsp;&nbsp;&nbsp;weights : 각 주식별 포트폴리오 비중의 벡터 [w1, w2, ...]
 
-&nbsp;initial_weight : 최적화 진행 과정의 초기 해 벡터
+&nbsp;&nbsp;&nbsp;&nbsp;initial_weight : 최적화 진행 과정의 초기 해 벡터
 
-&nbsp;risk_free_rate : 무위험 자산에 투자했을 때의 기대 수익률
+&nbsp;&nbsp;&nbsp;&nbsp;risk_free_rate : 무위험 자산에 투자했을 때의 기대 수익률
 
-&nbsp;mean_returns : 기대 수익률
+&nbsp;&nbsp;&nbsp;&nbsp;mean_returns : 기대 수익률
 
-&nbsp;cov_matrix : 공분산행렬
+&nbsp;&nbsp;&nbsp;&nbsp;cov_matrix : 공분산행렬
 
 목적함수:
 
-&nbsp;minimize -(∑(weights*mean_returns)-risk_free_rate)/(weight.T​·cov_matrix​·weights)^(1/2)
+&nbsp;&nbsp;&nbsp;&nbsp;minimize -(∑(weights*mean_returns)-risk_free_rate)/(weight.T​·cov_matrix​·weights)^(1/2)
 
 제약조건:
 
-&nbsp;weights_i >= 0, ∀ i (모든 주식에 대해 공매도를 진행하지 않는다.)
+&nbsp;&nbsp;&nbsp;&nbsp;weights_i >= 0, ∀ i (모든 주식에 대해 공매도를 진행하지 않는다.)
 
-&nbsp;∑weights = 1 (포트폴리오 비중의 합은 1이다.)
+&nbsp;&nbsp;&nbsp;&nbsp;∑weights = 1 (포트폴리오 비중의 합은 1이다.)
 
 ```python
 def calculate_portfolio_return(weights, mean_returns):
