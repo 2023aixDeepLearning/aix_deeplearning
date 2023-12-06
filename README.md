@@ -502,9 +502,11 @@ print(f'current asset : {current_asset}')
 print(f'changed asset after 1 period : {next_asset}')
 print(f'portfolio return during the period : {(next_asset-current_asset)/current_asset*100}%')
 ```
+```
 current asset : 10000000
 changed asset after 1 period : 10176500.0
 portfolio return during the period : 1.765%
+```
 
 같은 기간동안 모든 주식에 동일한 비중으로 투자했을 때의 결과(-1.33%)보다 더 좋은 결과가 나왔음을 확인
 
@@ -529,7 +531,7 @@ SK텔레콤       0.061281
 S-Oil      -0.030788
 KT          0.003466
 dtype: float64
-mean of actual returns : 
+mean of s : 
 -1.3333237596424146%
 ```
 
