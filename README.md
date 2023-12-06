@@ -381,7 +381,7 @@ dtype: float64
 
 expected return, covariance를 이용하여 포트폴리오 최적화를 진행한다. 이를통해 최적의 포트폴리오 비중을 계산한다.
 
-변수:
+##### 변수(Variables) :
 
 &nbsp;&nbsp;&nbsp;&nbsp;weights : 각 주식별 포트폴리오 비중의 벡터 [w1, w2, ...]
 
@@ -393,11 +393,11 @@ expected return, covariance를 이용하여 포트폴리오 최적화를 진행�
 
 &nbsp;&nbsp;&nbsp;&nbsp;cov_matrix : 공분산행렬
 
-목적함수:
+##### 목적함수(Objective Function) :
 
 &nbsp;&nbsp;&nbsp;&nbsp;minimize -(∑(weights*mean_returns)-risk_free_rate)/(weight.T​·cov_matrix​·weights)^(1/2)
 
-제약조건:
+##### 제약조건(Constraints) :
 
 &nbsp;&nbsp;&nbsp;&nbsp;weights_i >= 0, ∀ i (모든 주식에 대해 공매도를 진행하지 않는다.)
 
