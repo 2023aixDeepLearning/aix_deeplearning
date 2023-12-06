@@ -70,13 +70,15 @@ for stock in my_portfolio:
 
 stock_df
 ```
-(TODO: 결과 테이블 넣을 것)
+<img width="888" alt="스크린샷 2023-12-06 오후 2 50 31" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/6b83fe72-0885-4d92-8cb6-c4dbc22956b2">
+
 5. 10 영업일 주기로 포트폴리오 리밸런싱할 것을 고려하여, 10 영업일 주기의 데이터를 가져온다. 영업일은 주말과 휴일을 제외한 기간으로 매수, 매도가 가능한 기간이다. 10 영업일은 약 2주이다.
 ```python
 df = stock_df.iloc[::10,:]
 df
 ```
-(TODO: 결과 테이블 넣을 것)
+<img width="883" alt="스크린샷 2023-12-06 오후 2 50 37" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/ad8272c7-5d28-45c9-98cf-3da8f518c1d7">
+
 6. 각 종목 별 총 기간의 평균 수익과 변동성을 확인한다.
 ```python
 def get_returns(result):
@@ -105,8 +107,11 @@ for i in my_portfolio:
 
 pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of
 ```
+<img width="276" alt="스크린샷 2023-12-06 오후 2 52 11" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/5d2000ef-a0ac-43fc-a6b1-9a2cad9666e0">
+
 ### Methodology
-> ARIMA, XGBoost, GRU세가지 방식으로 포트폴리오를 예측하여 가장 성능이 좋은 모델을 선정하였다. 
+> ARIMA, XGBoost, GRU세가지 방식으로 포트폴리오를 예측하여 가장 성능이 좋은 모델을 선정하였다.
+
 #### ARIMA (AutoRegressive Integrated Moving Average) 모델
    - 주로 시계열 데이터 예측에 사용되며, 시계열 데이터에서 과거 관측된 값들을 사용하여 현재 또는 미래의 값을 예측할 수 있다.
    - 비정상 시계열에도 적용할 수 있다는 특징을 가진다.
@@ -171,75 +176,138 @@ from keras.models import Sequential
 from keras.layers import GRU, Dense
 from IPython.display import clear_output
 ```
-2. 주식 데이터를 가져온다.
-   - FinanceDataReader 사용을 위해 설치 후 import 한다.
+2. 시계열 데이터 예측을 위한 예시 데이터를 생성한다. 0 시점부터 199 시점까지의 데이터를 가진다.
 ```python
-!pip install -U finance-datareader
-import FinanceDataReader as fdr
+import random
+random.seed(123)
+
+time_series_data = []
+for i in range(200):
+  time_series_data.append(3*np.sin(i + random.random())+20+2*random.random())
+
+print('Example data')
+plt.plot(time_series_data)
 ```
-  -  코스피 주식 중 2000년 이전에 상장된 주식들을 선정하였다.
+![KakaoTalk_Photo_2023-12-06-14-54-25 001jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/1bd4de6c-7af5-46c0-af96-bd100980aed7)
+
+3. ARIMA 모델을 통한 시계열 예측
+   - 처음 시점부터 t 시점까지의 데이터를 이용해 t+1 시점의 값을 예측하는 과정을 반복한다. 이렇게 180시점부터 199시점 까지의 값을 예측한다.
 ```python
-stock_name = fdr.StockListing('KOSPI')['Name'].to_list()
-stock_code = fdr.StockListing('KOSPI')['Code'].to_list()
+order = (2,1,2)
 
-print(stock_name)
-print(stock_code)
+ARIMA_preds = []
+for i in range(180,200):
+  model = ARIMA(time_series_data[0:i], order=order)
+  res = model.fit()
+  prediction = res.forecast(steps=1)
+  ARIMA_preds.append(prediction)
+
+plt.plot(time_series_data[180:], label = 'Actual')
+plt.plot(ARIMA_preds, label = 'ARIMA_prediction')
+plt.legend()
+plt.show()
 ```
-  - 주식의 종가를 바탕으로 포트폴리오 투자를 진행하기 위해 각 주식의 2000년 이후의 종가 데이터를 가져온다.
+![KakaoTalk_Photo_2023-12-06-14-54-26 002jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/e1d596bb-a995-4f5e-965d-1f5522f180e2)
+
+4. XGBoost를 통한 시계열 예측
+   - t, t-1, ..., t-4 시점까지의 값을 X_train의 각각의 feature로 지정하고, t+1 시점의 값을 y로 지정하여 예측한다.
 ```python
-my_portfolio = ['삼성전자', 'SK하이닉스','POSCO홀딩스', '현대차', '기아', '삼성SDI', '현대모비스', 'LG', '카카오', 'SK텔레콤', '기업은행', 'S-Oil', 'KT']
-len(my_portfolio)
+def create_sequence(data, seq_length):
+  sequence = [data[i:i+seq_length+1] for i in range(len(data)-seq_length+1+1)]
+
+  df = pd.DataFrame(sequence)
+
+  return df.dropna()
+
+
+def XGB_AutoRgression(data, seq_length, XGB_params):
+    seq_df = pd.DataFrame(create_sequence(data, seq_length))
+
+    X_train = seq_df.iloc[:-1,1:]
+    y_train = seq_df.iloc[:-1,0]
+    X_test = seq_df.iloc[-1:,1:]
+
+    model = xgb.XGBRegressor(**XGB_params)
+    model.fit(X_train, y_train)
+    pred_y = model.predict(X_test)
+    return pred_y
+
+XGB_parameters = {
+    'n_estimators': 30,
+    'learning_rate': 0.1,
+    'max_depth': 5,
+    'min_child_weight': 1,
+    'subsample': 0.8,
+    'colsample_bytree': 0.8,
+    'reg_alpha': 0,
+    'reg_lambda': 1}
+
+XGB_preds = []
+for i in range(180,200):
+  XGB_preds.append(XGB_AutoRgression(time_series_data[:i], 5, XGB_parameters))
+
+plt.plot(time_series_data[180:], label = 'Actual')
+plt.plot(XGB_preds, label = 'XGB_prediction')
+plt.legend()
+plt.show()
 ```
+![KakaoTalk_Photo_2023-12-06-14-54-26 003jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/0633b6c9-ca89-48c1-8999-dae84c7d0fe5)
+
+5. GRU를 통한 시계열 예측
+  - GRU 모델을 구축한다.
 ```python
-stock_dict = dict(zip(stock_name, stock_code))
+from keras.models import Sequential
+from keras.layers import GRU, Dense
 
-stock_df = pd.DataFrame()
-
-for stock in my_portfolio:
-    stock_df[stock] = fdr.DataReader(stock_dict[stock], '2000-01-01', '2023-01-01')['Close']
-
-
-stock_df
+GRU_model = Sequential()
+GRU_model.add(GRU(8, input_shape=(5, 1)))
+GRU_model.add(Dense(10))
+GRU_model.add(Dense(1))
+GRU_model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])
 ```
-  - 10 근무일 주기로 포트폴리오 리밸런싱할 것을 고려하여, 10근무일 주기의 데이터를 가져온다. 근무일은 주말과 휴일을 제외한 기간으로 매수, 매도가 가능한 기간이다. 10 근무일은 약 2주정도이다.
+  - sequence를 생성하고 GRU_model에 적합시킨다.
 ```python
-df = stock_df.iloc[::10,:]
-df
-```
-```python
-def get_returns(result):
-  ans = [0]
-  for i in range(1, len(result)):
-    ans.append((result[i]-result[i-1])/result[i-1])
-  return ans
-def get_mean_return(returns):
-  return sum(returns)/len(returns)
-def get_risk(returns):
-  n = len(returns)
-  mean = sum(returns)/n
-  ans = 0
-  for i in range(n):
-    ans += (returns[i]-mean)**2
-  return (ans/n)**(1/2)
-```
-  - 각 종목별 총 기간의 평균 수익과 변동성을 확인한다.
-```python
-mean_return_of_each_asset = []
-risk_of_each_asset = []
+def create_sequence_for_GRU(data, seq_length):
+  sequences = []
+  for i in range(len(data) - seq_length):
+      seq = data[i:i + seq_length]
+      target = data[i+seq_length : i+seq_length+1]
+      sequences.append((seq, target))
+  return np.array(sequences)
 
-for i in my_portfolio:
 
-  ret = get_returns(list(df[i]))
-  mean_return_of_each_asset.append(get_mean_return(ret))
-  risk_of_each_asset.append(get_risk(ret))
+def GRU(data, seq_length, GRU_model):
 
-print(mean_return_of_each_asset)
-print(risk_of_each_asset)
+  sequences = create_sequence_for_GRU(data, seq_length)
+
+  train_sequences = sequences[:-1]
+  test_sequences = sequences[-1:]
+
+  X_train = np.array([item[0] for item in train_sequences])
+  y_train = np.array([item[1] for item in train_sequences])
+  X_test = np.array([item[0] for item in test_sequences])
+
+  model = GRU_model
+  model.fit(X_train, y_train, epochs= 5, batch_size=5, verbose=0)
+
+  pred_y = model.predict(X_test)
+  return pred_y
+
+GRU_preds = []
+for i in range(180,200):
+  pred = GRU(time_series_data[:i], 5, GRU_model)
+  GRU_preds.append(pred[0][0])
 ```
+
 ```python
-pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of_each_asset},index=my_portfolio)
+plt.plot(time_series_data[180:], label = 'Actual')
+plt.plot(GRU_preds, label = 'GRU_prediction')
+plt.legend()
+plt.show()
 ```
-3. 포트폴리오 클래스 생성
+![KakaoTalk_Photo_2023-12-06-14-54-26 004jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/9c0895b7-efce-4a1b-b880-5067dcf83f71)
+
+6. 포트폴리오 클래스 생성
    - 포트폴리오 최적화는 마코비츠 모델에 따라 진행한다.
 ```python
 class Markowitz_model:
@@ -300,8 +368,6 @@ class Markowitz_model:
         target = data[i + seq_length:i + seq_length + 1]
         sequences.append((seq, target))
     return np.array(sequences)
-
-
 
   def XGB_AR(self, data, seq_length):
 
