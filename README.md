@@ -1,7 +1,7 @@
 # aix_deeplearning
 
 ## Title
-  Markowitz 모델과 머신러닝을 활용한 포트폴리오 최적화
+  #### Markowitz 모델과 머신러닝을 활용한 포트폴리오 최적화 ####
 
 ### Members
   문서진, 컴퓨터소프트웨어학부 2021019834, sj1226m@hanyang.ac.kr
@@ -344,6 +344,7 @@ Mean = return_matrix.iloc[-5:].mean()
 print(f'Covariance matrix : \n{Cov}')
 print(f'Expected return of each asset : \n{Mean}')
 ```
+```
 Covariance matrix : 
 [ 3.07e-03  1.21e-03  1.81e-03  1.92e-03  2.02e-03  1.37e-03  2.23e-03 ... ]
 [ 1.21e-03  4.58e-03  3.36e-03  1.06e-03  3.31e-04  1.13e-03  5.68e-04 ... ]
@@ -358,7 +359,8 @@ Covariance matrix :
 [ 2.36e-03  2.28e-03  3.06e-03  2.10e-03  2.20e-03  2.34e-03  1.82e-03 ... ]
 [ 1.10e-03  9.68e-04  2.30e-04 -4.92e-04 -1.24e-03  3.03e-03  6.06e-04 ... ]
 [ 7.23e-04  1.70e-03  2.37e-03  1.92e-04 -7.29e-05  1.58e-03  3.94e-04 ... ]
-
+```
+```
 Expected return of each asset : 
 삼성전자       -0.012186
 SK하이닉스      0.000537
@@ -374,6 +376,7 @@ SK텔레콤      -0.001693
 S-Oil       0.013416
 KT         -0.002602
 dtype: float64
+```
 
 expected return, covariance를 이용하여 포트폴리오 최적화를 진행한다. 이를통해 최적의 포트폴리오 비중을 계산한다.
 
@@ -429,6 +432,7 @@ ratio = result.x
 portpolio_ratio_of_each_asset = pd.DataFrame(ratio, index = my_portfolio, columns = ['ratio'])
 print(f'portfolio ratio of each stock : \n {portpolio_ratio_of_each_asset}')
 ```
+```
 portfolio ratio of each stock : 
                   ratio
 삼성전자     -3.769811e-16
@@ -444,6 +448,7 @@ SK텔레콤    -5.390244e-16
 기업은행     -9.160123e-16
 S-Oil     2.196992e-01
 KT        1.037297e-16
+```
 
 위에서 구한 주식별 비중을 통해 현 시점(2016-02-23)에 리벨런싱 할 주식의 개수를 구한다. 현 시점 가용 금액은 1천만원이고, 포트폴리오 비중과 현 시점의 주가를 고려한 주식의 개수를 계산한다.
 
@@ -462,6 +467,7 @@ number_of_each_stock = pd.DataFrame(num_of_stocks, index = my_portfolio, columns
 print(f'number of stock by portfolio ratio : \n{number_of_each_stock}
 ```
 
+```
 number of stock by portfolio ratio : 
           Number of stock
 삼성전자                  0.0
@@ -477,6 +483,7 @@ SK텔레콤                 0.0
 기업은행                  0.0
 S-Oil                25.0
 KT                    0.0
+```
 
 위 결과에 따라 포트폴리오 리밸런싱을 하고, 다음 시점인 2016년 3월 9일 주가변동에 따른 자산의 변화를 계산한다.
 
@@ -505,6 +512,7 @@ actual_return = (current_stock_price-next_stock_price)/current_stock_price
 print(f'actual return of each stock : \n{actual_return}')
 print(f'mean of actual returns : \n{sum(actual_return)/len(actual_ret
 ```
+```
 actual return of each stock : 
 삼성전자       -0.011008
 SK하이닉스     -0.004934
@@ -522,6 +530,7 @@ KT          0.003466
 dtype: float64
 mean of actual returns : 
 -1.3333237596424146%
+```
 
 return matrix를 구하는 과정부터 expected return을 구하고 최적화를 거쳐 자산의 변화를 거치는 과정을 반복하는 class를 생성한다.
 
