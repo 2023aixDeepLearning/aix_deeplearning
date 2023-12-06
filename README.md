@@ -14,17 +14,17 @@
   
 
 ### Proposal (Option A)
-  -Motivation: Why are you doing this?
+  #### Motivation: Why are you doing this?
   
-Markowitz모델은 포트폴리오 투자에서 위험성 대비 수익률을 최대화 하는 포트폴리오 비중을 계산하여 포트폴리오 최적화하는 수학적 모델이다. Markowitz 모델의 최적화 과정에서 목적함수에 다음 시점의 기대수익의 예측값이 포함된다. 이때 주로 사용하는 기대수익의 예측값으로 머신러닝, 딥러닝 기법을 사용하여 투자를 진행하면 좋은 결과가 나올지 확인해보려 하였다. 
+```Markowitz모델은 포트폴리오 투자에서 위험성 대비 수익률을 최대화 하는 포트폴리오 비중을 계산하여 포트폴리오 최적화하는 수학적 모델이다. Markowitz 모델의 최적화 과정에서 목적함수에 다음 시점의 기대수익의 예측값이 포함된다. 이때 주로 사용하는 기대수익의 예측값으로 머신러닝, 딥러닝 기법을 사용하여 투자를 진행하면 좋은 결과가 나올지 확인해보려 하였다.``` 
   
-  -What do you want to see at the end?
+  #### What do you want to see at the end?
   
-머신러닝, 딥러닝 기법으로 도출한 예상 수익률과 Markowitz 모델을 활용하여 포트폴리오 투자를 시뮬레이션한다. FinanceDateReader 모듈로 실제 코스피 주식 데이터를 불러오고, 특정 기간을 주기로 포트폴리오 비중을 조정하는 리밸런싱을 반복한다. 이때 포트폴리오 투자를 마치는 시점에서의 수익률과, 이 투자방법의 위험성을 확인하고 적합한 투자 방법인지 확인한다.
+```머신러닝, 딥러닝 기법으로 도출한 예상 수익률과 Markowitz 모델을 활용하여 포트폴리오 투자를 시뮬레이션한다. FinanceDateReader 모듈로 실제 코스피 주식 데이터를 불러오고, 특정 기간을 주기로 포트폴리오 비중을 조정하는 리밸런싱을 반복한다. 이때 포트폴리오 투자를 마치는 시점에서의 수익률과, 이 투자방법의 위험성을 확인하고 적합한 투자 방법인지 확인한다.```
 
 ### Datasets  
 파이썬의 FinanceDataReader 모듈을 이용해 코스피에 상장된 주식 데이터를 가져온다.
-1. 필요한 모듈을 import 한다.
+#### 1. 필요한 모듈을 import 한다. ####
 ```python
 !pip install -U finance-datareader
 import FinanceDataReader as fdr
@@ -38,7 +38,7 @@ Collecting finance-datareader
 Installing collected packages: requests-file, finance-datareader
 Successfully installed finance-datareader-0.9.66 requests-file-1.5.1  
 ```
-2. 파이썬의 FinanceDataReader 모듈을 이용해 코스피에 상장된 주식 데이터를 가져온다.
+#### 2. 파이썬의 FinanceDataReader 모듈을 이용해 코스피에 상장된 주식 데이터를 가져온다. ####
 ```python
 stock_name = fdr.StockListing('KOSPI')['Name'].to_list()
 stock_code = fdr.StockListing('KOSPI')['Code'].to_list()
@@ -50,7 +50,7 @@ print(stock_code[0:20])
 ['삼성전자', 'LG에너지솔루션', 'SK하이닉스', '삼성바이오로직스', '삼성전자우', 'POSCO홀딩스', '현대차', '기아', 'LG화학', 'NAVER', '삼성SDI', '포스코퓨처엠', '셀트리온', '카카오', '삼성물산', '현대모비스', 'KB금융', '신한지주', 'LG전자', '삼성생명']
 ['005930', '373220', '000660', '207940', '005935', '005490', '005380', '000270', '051910', '035420', '006400', '003670', '068270', '035720', '028260', '012330', '105560', '055550', '066570', '032830']
 ```
-3. 코스피 주식 중 2000년 이전에 상장된 주요 주식들을 선정하였다.
+#### 3. 코스피 주식 중 2000년 이전에 상장된 주요 주식들을 선정하였다. ####
 ```python
 my_portfolio = ['삼성전자', 'SK하이닉스','POSCO홀딩스', '현대차', '기아', '삼성SDI', '현대모비스', 'LG', '카카오', 'SK텔레콤', '기업은행', 'S-Oil', 'KT']
 len(my_portfolio)
@@ -58,7 +58,7 @@ len(my_portfolio)
 ```
 13
 ```
-4. 주식의 종가를 바탕으로 포트폴리오 투자를 진행하기 위해 각 주식의 2000년 이후의 종가 데이터를 가져온다.
+#### 4. 주식의 종가를 바탕으로 포트폴리오 투자를 진행하기 위해 각 주식의 2000년 이후의 종가 데이터를 가져온다. ####
 ```python
 stock_dict = dict(zip(stock_name, stock_code))
 
@@ -72,14 +72,14 @@ stock_df
 ```
 <img width="888" alt="스크린샷 2023-12-06 오후 2 50 31" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/6b83fe72-0885-4d92-8cb6-c4dbc22956b2">
 
-5. 10 영업일 주기로 포트폴리오 리밸런싱할 것을 고려하여, 10 영업일 주기의 데이터를 가져온다. 영업일은 주말과 휴일을 제외한 기간으로 매수, 매도가 가능한 기간이다. 10 영업일은 약 2주이다.
+#### 5. 10 영업일 주기로 포트폴리오 리밸런싱할 것을 고려하여, 10 영업일 주기의 데이터를 가져온다. 영업일은 주말과 휴일을 제외한 기간으로 매수, 매도가 가능한 기간이다. 10 영업일은 약 2주이다. ####
 ```python
 df = stock_df.iloc[::10,:]
 df
 ```
 <img width="883" alt="스크린샷 2023-12-06 오후 2 50 37" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/ad8272c7-5d28-45c9-98cf-3da8f518c1d7">
 
-6. 각 종목 별 총 기간의 평균 수익과 변동성을 확인한다.
+#### 6. 각 종목 별 총 기간의 평균 수익과 변동성을 확인한다. ####
 ```python
 def get_returns(result):
   ans = [0]
@@ -160,7 +160,7 @@ pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of
        ```
 
 ### Code
-1. 필요한 모듈을 가져온다.
+#### 1. 필요한 모듈을 가져온다. ####
 ```python
 import warnings
 warnings.filterwarnings('ignore')
@@ -176,7 +176,7 @@ from keras.models import Sequential
 from keras.layers import GRU, Dense
 from IPython.display import clear_output
 ```
-2. 시계열 데이터 예측을 위한 예시 데이터를 생성한다. 0 시점부터 199 시점까지의 데이터를 가진다.
+#### 2. 시계열 데이터 예측을 위한 예시 데이터를 생성한다. 0 시점부터 199 시점까지의 데이터를 가진다. ####
 ```python
 import random
 random.seed(123)
@@ -190,7 +190,7 @@ plt.plot(time_series_data)
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-25 001jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/1bd4de6c-7af5-46c0-af96-bd100980aed7)
 
-3. ARIMA 모델을 통한 시계열 예측
+#### 3. ARIMA 모델을 통한 시계열 예측 ####
    - 처음 시점부터 t 시점까지의 데이터를 이용해 t+1 시점의 값을 예측하는 과정을 반복한다. 이렇게 180시점부터 199시점 까지의 값을 예측한다.
 ```python
 order = (2,1,2)
@@ -209,7 +209,7 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 002jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/e1d596bb-a995-4f5e-965d-1f5522f180e2)
 
-4. XGBoost를 통한 시계열 예측
+#### 4. XGBoost를 통한 시계열 예측 ####
    - t, t-1, ..., t-4 시점까지의 값을 X_train의 각각의 feature로 지정하고, t+1 시점의 값을 y로 지정하여 예측한다.
 ```python
 def create_sequence(data, seq_length):
@@ -253,7 +253,7 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 003jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/0633b6c9-ca89-48c1-8999-dae84c7d0fe5)
 
-5. GRU를 통한 시계열 예측
+#### 5. GRU를 통한 시계열 예측 ####
   - GRU 모델을 구축한다.
 ```python
 from keras.models import Sequential
@@ -307,7 +307,7 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 004jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/9c0895b7-efce-4a1b-b880-5067dcf83f71)
 
-6. 포트폴리오 클래스 생성
+#### 6. 포트폴리오 클래스 생성 ####
    - 포트폴리오 최적화는 Markowitz Model에 따라 진행한다.
 
 주가 정보의 데이터프레임을 이용하여 2000년 1월(0행)부터 2016년 2월(399행) 까지의 return 데이터프레임을 생성한다.
