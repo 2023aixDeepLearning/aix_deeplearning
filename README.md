@@ -308,7 +308,7 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 004jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/9c0895b7-efce-4a1b-b880-5067dcf83f71)
 
-#### 6. 포트폴리오 클래스 생성 ####
+#### 6. Markowitz Model ####
    - 포트폴리오 최적화는 Markowitz Model에 따라 진행한다.
 
 주가 정보의 데이터프레임을 이용하여 2000년 1월(0행)부터 2016년 2월(399행) 까지의 return 데이터프레임을 생성한다.
@@ -535,6 +535,7 @@ mean of s :
 -1.3333237596424146%
 ```
 
+#### 포트폴리오 클래스 생성 ####
 return matrix를 구하는 과정부터 expected return을 구하고 최적화를 거쳐 자산의 변화를 거치는 과정을 반복하는 class를 생성한다.
 
 이 class는 위에서 진행했던 현 시점의 포트폴리오를 설정하고 다음 시점의 자산의 변화를 확인하는 일련의 과정을 반복한다.
@@ -914,7 +915,6 @@ print(f'total return by model3 = {(result3[-1]-result3[0])/result3[0]*10
 ```
 <img width="573" alt="스크린샷 2023-12-06 오후 3 11 15" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/4cea88fc-5dc3-4066-8a98-883b3192f050">
 
-### Conclusion  
 동일한 기간 동안 모든 주식에 동일한 비중으로 투자하고 유지했을 때의 결과이다. 총 수익률(91.978%)이 Markowitz 모델과 ARIMA, XGBoost, GRU 방법을 활용했을 때보다 낮게 나왔음을 확인할 수 있다.
 ```python
 return_df = return_mat(df,len(df))
@@ -931,6 +931,14 @@ print(f'risk by model4 = {get_risk(returns4)*100}%')
 print(f'total return by model4 = {(result4[-1]-result4[0])/result4[0]*100}%
 ```
 <img width="586" alt="스크린샷 2023-12-06 오후 3 11 17" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/15bcc2f2-c488-4966-a9b2-2fbe19821635">
+
+### Conclusion  
+
+Markowitz 모델과 머신러닝, 딥러닝 모델을 결합한 모델을 이용하여 2016년 2월 9일부터 2022년 말까지 포트폴리오 투자를 시뮬레이션 해보았다. ARIMA, XGBoost, GRU 각각을 적용해본 결과 모든 경우에 최종 수익률은 모든 주식에 동일 비중을 투자하고 유지했을 때보다 좋은 수익률을 얻었다.
+
+그러나 또 하나 알아낸 점은 수익률이 높은 방법일 수록 투자 시의 위험성도 높다는 점이다. 기간별 수익률의 표준편차로 계산되는 risk는 수익률이 가장 높은 모델 GRU에서 5.015%로 가장 높았고, 수익률이 가장 낮게 나온 동일비중을 투자 후 유지하는 전략이 3.84%로 가장 낮았다. 모든 방법에서 수익률이 높은 순서대로 risk도 높았다. risk가 높다는 것은 손익이 발생했을 때 그 손익이 커지는 대신 손실이 발생했을 때의 손실 또한 커질 수 있음을 의미한다.
+
+포트폴리오 투자 방법은 개인의 성향에 따라 다를 수 있다. High risk high return을 추구할 수도 있고, low risk low return을 추구할 수도 있다. 투자 방법과 모델을 다양하게 설정하고 다양한 상황에서 투자 시뮬레이션을 진행해보며 자신에게 맞는 최적의 포트폴리오를 찾는 것이 투자 성공에 도움을 줄 수 있을 것이다.
 
 ### 참고 문헌
 [1] Peng Chuyin, Mo Zhengma, Zhang Xinyu, A Study of Wordle Reported Outcome Data Based on ARIMA-XGBoost Model, IEEE, 774-779 Aug, 2023  
