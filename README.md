@@ -1,4 +1,4 @@
-<img width="573" alt="스크린샷 2023-12-06 오후 3 11 15" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/1c505332-3406-4917-8ae3-47ede0611bff"># aix_deeplearning
+# aix_deeplearning
 
 ## Title
   Markowitz 모델과 머신러닝을 활용한 포트폴리오 최적화
