@@ -137,7 +137,12 @@ pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of
 
     <img width="380" alt="다운로드" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/149667956/5a8c2a1c-b7f5-4859-b0e9-68515e140216">
   - 각 과정에 등장하는 알고리즘 수식은 [2]의 자료를 참고하였다.
-  - 기본적으로 결정 트리(Decision tree), 렌덤 포레스트 등의 기반을 가지고 있기 때문에 'n_estimators:결정 트리 개수', 'max_depth:트리 깊이', 'learning_rete:학습률' 등의 하이퍼파리마터를 갖는다.
+  - 기본적으로 결정 트리(Decision tree), 렌덤 포레스트 등의 기반을 가지고 있기 때문에 'n_estimators:결정 트리 개수', 'max_depth:트리 깊이', 'learning_rete:학습률' 등의 하이퍼파리미터를 갖는다.
+  - 예시 코드는 다음과 같다.
+     - ```python
+       def XGB_AutoRgression(data, seq_length, XGB_params):
+          seq_df = pd.DataFrame(create_sequence(data, seq_length))
+       ```  
 
 #### GRU (Gated Recurrent Unit) 모델
 <p align="center">
