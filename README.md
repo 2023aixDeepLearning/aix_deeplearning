@@ -26,6 +26,23 @@
 파이썬의 FinanceDataReader 모듈을 이용해 코스피에 상장된 주식 데이터를 가져온다.
 #### 1. 필요한 모듈을 import 한다. ####
 ```python
+import warnings
+warnings.filterwarnings('ignore')
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from cvxopt import matrix, solvers
+from cvxopt.solvers import qp
+from statsmodels.tsa.arima.model import ARIMA
+from scipy.optimize import minimize
+import xgboost as xgb
+from keras.models import Sequential
+from keras.layers import GRU, Dense
+from IPython.display import clear_output
+```
+
+
+```python
 !pip install -U finance-datareader
 import FinanceDataReader as fdr
 ```
@@ -292,26 +309,6 @@ plt.legend()
 plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 004jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/9c0895b7-efce-4a1b-b880-5067dcf83f71)
-
-### Code
-#### 필요한 모듈을 가져온다. ####
-```python
-import warnings
-warnings.filterwarnings('ignore')
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from cvxopt import matrix, solvers
-from cvxopt.solvers import qp
-from statsmodels.tsa.arima.model import ARIMA
-from scipy.optimize import minimize
-import xgboost as xgb
-from keras.models import Sequential
-from keras.layers import GRU, Dense
-from IPython.display import clear_output
-```
-
-
 
 
 #### Markowitz Model ####
