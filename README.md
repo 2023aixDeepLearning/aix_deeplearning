@@ -125,64 +125,10 @@ pd.DataFrame({'mean_returns':mean_return_of_each_asset, 'Volatility':risk_of
       
    - ARIMA model development process
 ![ARIMA-model-development-process-ARIMA-autoregressive-integrated-moving-average](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/5778ab60-7d8e-4c19-a791-4315d3095f3f)
-    
-#### XGBoost(eXtra Gradient Boost)
-  - XGBoost(eXtra Gradient Boost)는 기존 Gradient Tree Boosting 알고리즘에 과적합 방지를 위한 기법이 추가된 지도 학습 알고리즘이다.
-  - XGBoost 알고리즘은 기본 학습기(Base Learner)를 의사결정 나무로 하며 Gradient Boosting과 같이 Gradent(잔차)를 이용하여 이전 모형의 약점을 보완하는 방식으로 학습을 진행한다.
 
-![image](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/149667956/4c3382d8-1112-40ac-9ce1-c097227222dc)
+#### ARIMA 모델을 통한 시계열 예측 예시 ####
 
-  - 분류에 있어 일반적으로 다른 머신러닝보다 뛰어난 예측 성능을 나타내며, 병렬 CPU 환경에서 병렬 학습이 가능해 기존 GBM보다 빠르게 학습을 완료할 수 있다는 특징을 가진다.
-  - Boosting은 약한 학습기들을 순차적으로 학습시켜 가중치를 부여하여 강력한 학습기를 만드는 방법이며, 원리는 m1~3 모델이 있을때, m1에는 x에서 샘플링된 데이터를 넣는다. 그리고, 나온 결과중에서, 예측이 잘못된 x중의 값들에 가중치를 반영해서 다음 모델인 m2에 넣는다.  마찬가지로 y2 결과에서 예측이 잘못된 x’에 값들에 가중치를 반영해서 m3에 넣는다. 그리고, 각 모델의 성능이 다르기 때문에, 각 모델에 가중치 W를 반영한다. 이를 개념적으로 표현하면 다음 그림과 같다[2].
-
-    <img width="380" alt="다운로드" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/149667956/5a8c2a1c-b7f5-4859-b0e9-68515e140216">
-  - 각 과정에 등장하는 알고리즘 수식은 [2]의 자료를 참고하였다.
-  - 기본적으로 결정 트리(Decision tree), 렌덤 포레스트 등의 기반을 가지고 있기 때문에 'n_estimators:결정 트리 개수', 'max_depth:트리 깊이', 'learning_rete:학습률' 등의 하이퍼파리미터를 갖는다.
-  - 예시 코드는 다음과 같다.
-     - ```python
-       def XGB_AutoRgression(data, seq_length, XGB_params):
-          seq_df = pd.DataFrame(create_sequence(data, seq_length))
-       ```  
-
-#### GRU (Gated Recurrent Unit) 모델
-<p align="center">
-  <img 
-    src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/54359232/244cc10e-1537-4a11-a7f6-a893fa61043e" 
-    width="300"
-    />
-</p>
-
-   - GRU는 LSTM의 장기 의존성 문제(은닉층의 정보가 마지막까지 전달되지 못하던 기존 RNN의 문제점)에 대한 해결책을 유지하면서, 은닉 상태를 업데이트하는 계산을 줄여 연산 속도를 개선했다.
-   - ##### LSTM과 GRU의 차이점
-     - LSTM에는 출력, 입력, 삭제를 담당하는 3개의 게이트가 존재한다.
-     - GRU의 경우, 업데이트와 리셋을 담당하는 2개의 게이트만 존재한다.
-     - 따라서 LSTM 대비 학습 속도는 빠르면서, 비슷한 성능을 보인다.
-   - Reset Gate(리셋 게이트)는 이전 은닉 상태(h<sub>t-1</sub>)를 얼마나 잊을지를 결정한다.
-   - Update Gate(업데이트 게이트)는 이전 은닉 상태(h<sub>t-1</sub>)와 새로운 정보(x<sub>t</sub>)간의 균형을 결정한다.
-   - 경험적으로 데이터의 양이 적은 경우 GRU, 데이터의 양이 많은 경우 LSTM을 더 선호한다. (매개변수의 개수 차이)
-   - 텐서플로우의 케라스의 경우 아래와 같이 GRU의 구현을 지원한다.
-     - ```python
-       model.add(GRU(hidden_size, input_shape=(timesteps, input_dim)))
-       ```
-
-### Code
-#### 1. 필요한 모듈을 가져온다. ####
-```python
-import warnings
-warnings.filterwarnings('ignore')
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from cvxopt import matrix, solvers
-from cvxopt.solvers import qp
-from statsmodels.tsa.arima.model import ARIMA
-from scipy.optimize import minimize
-import xgboost as xgb
-from keras.models import Sequential
-from keras.layers import GRU, Dense
-from IPython.display import clear_output
-```
-#### 2. 시계열 데이터 예측을 위한 예시 데이터를 생성한다. 0 시점부터 199 시점까지의 데이터를 가진다. ####
+시계열 데이터 예측을 위한 예시 데이터를 생성한다. 0 시점부터 199 시점까지의 데이터를 가진다.
 ```python
 import random
 random.seed(123)
@@ -195,8 +141,6 @@ print('Example data')
 plt.plot(time_series_data)
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-25 001jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/1bd4de6c-7af5-46c0-af96-bd100980aed7)
-
-#### 3. ARIMA 모델을 통한 시계열 예측 ####
    - 처음 시점부터 t 시점까지의 데이터를 이용해 t+1 시점의 값을 예측하는 과정을 반복한다. 이렇게 180시점부터 199시점 까지의 값을 예측한다.
 ```python
 order = (2,1,2)
@@ -215,7 +159,21 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 002jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/e1d596bb-a995-4f5e-965d-1f5522f180e2)
 
-#### 4. XGBoost를 통한 시계열 예측 ####
+    
+#### XGBoost(eXtra Gradient Boost)
+  - XGBoost(eXtra Gradient Boost)는 기존 Gradient Tree Boosting 알고리즘에 과적합 방지를 위한 기법이 추가된 지도 학습 알고리즘이다.
+  - XGBoost 알고리즘은 기본 학습기(Base Learner)를 의사결정 나무로 하며 Gradient Boosting과 같이 Gradent(잔차)를 이용하여 이전 모형의 약점을 보완하는 방식으로 학습을 진행한다.
+
+![image](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/149667956/4c3382d8-1112-40ac-9ce1-c097227222dc)
+
+  - 분류에 있어 일반적으로 다른 머신러닝보다 뛰어난 예측 성능을 나타내며, 병렬 CPU 환경에서 병렬 학습이 가능해 기존 GBM보다 빠르게 학습을 완료할 수 있다는 특징을 가진다.
+  - Boosting은 약한 학습기들을 순차적으로 학습시켜 가중치를 부여하여 강력한 학습기를 만드는 방법이며, 원리는 m1~3 모델이 있을때, m1에는 x에서 샘플링된 데이터를 넣는다. 그리고, 나온 결과중에서, 예측이 잘못된 x중의 값들에 가중치를 반영해서 다음 모델인 m2에 넣는다.  마찬가지로 y2 결과에서 예측이 잘못된 x’에 값들에 가중치를 반영해서 m3에 넣는다. 그리고, 각 모델의 성능이 다르기 때문에, 각 모델에 가중치 W를 반영한다. 이를 개념적으로 표현하면 다음 그림과 같다[2].
+
+    <img width="380" alt="다운로드" src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/149667956/5a8c2a1c-b7f5-4859-b0e9-68515e140216">
+  - 각 과정에 등장하는 알고리즘 수식은 [2]의 자료를 참고하였다.
+  - 기본적으로 결정 트리(Decision tree), 렌덤 포레스트 등의 기반을 가지고 있기 때문에 'n_estimators:결정 트리 개수', 'max_depth:트리 깊이', 'learning_rete:학습률' 등의 하이퍼파리미터를 갖는다.
+
+#### XGBoost를 통한 시계열 예측 예시 ####
    - t, t-1, ..., t-4 시점까지의 값을 X_train의 각각의 feature로 지정하고, t+1 시점의 값을 y로 지정하여 예측한다.
 ```python
 def create_sequence(data, seq_length):
@@ -259,7 +217,29 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 003jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/0633b6c9-ca89-48c1-8999-dae84c7d0fe5)
 
-#### 5. GRU를 통한 시계열 예측 ####
+
+#### GRU (Gated Recurrent Unit) 모델
+<p align="center">
+  <img 
+    src="https://github.com/2023aixDeepLearning/aix_deeplearning/assets/54359232/244cc10e-1537-4a11-a7f6-a893fa61043e" 
+    width="300"
+    />
+</p>
+
+   - GRU는 LSTM의 장기 의존성 문제(은닉층의 정보가 마지막까지 전달되지 못하던 기존 RNN의 문제점)에 대한 해결책을 유지하면서, 은닉 상태를 업데이트하는 계산을 줄여 연산 속도를 개선했다.
+   - ##### LSTM과 GRU의 차이점
+     - LSTM에는 출력, 입력, 삭제를 담당하는 3개의 게이트가 존재한다.
+     - GRU의 경우, 업데이트와 리셋을 담당하는 2개의 게이트만 존재한다.
+     - 따라서 LSTM 대비 학습 속도는 빠르면서, 비슷한 성능을 보인다.
+   - Reset Gate(리셋 게이트)는 이전 은닉 상태(h<sub>t-1</sub>)를 얼마나 잊을지를 결정한다.
+   - Update Gate(업데이트 게이트)는 이전 은닉 상태(h<sub>t-1</sub>)와 새로운 정보(x<sub>t</sub>)간의 균형을 결정한다.
+   - 경험적으로 데이터의 양이 적은 경우 GRU, 데이터의 양이 많은 경우 LSTM을 더 선호한다. (매개변수의 개수 차이)
+   - 텐서플로우의 케라스의 경우 아래와 같이 GRU의 구현을 지원한다.
+     - ```python
+       model.add(GRU(hidden_size, input_shape=(timesteps, input_dim)))
+       ```
+
+#### GRU를 통한 시계열 예측 예시 ####
   - GRU 모델을 구축한다.
 ```python
 from keras.models import Sequential
@@ -313,7 +293,28 @@ plt.show()
 ```
 ![KakaoTalk_Photo_2023-12-06-14-54-26 004jpeg](https://github.com/2023aixDeepLearning/aix_deeplearning/assets/80944952/9c0895b7-efce-4a1b-b880-5067dcf83f71)
 
-#### 6. Markowitz Model ####
+### Code
+#### 필요한 모듈을 가져온다. ####
+```python
+import warnings
+warnings.filterwarnings('ignore')
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from cvxopt import matrix, solvers
+from cvxopt.solvers import qp
+from statsmodels.tsa.arima.model import ARIMA
+from scipy.optimize import minimize
+import xgboost as xgb
+from keras.models import Sequential
+from keras.layers import GRU, Dense
+from IPython.display import clear_output
+```
+
+
+
+
+#### Markowitz Model ####
    - 포트폴리오 최적화는 Markowitz Model에 따라 진행한다.
 
 주가 정보의 데이터프레임을 이용하여 2000년 1월(0행)부터 2016년 2월(399행) 까지의 return 데이터프레임을 생성한다.
