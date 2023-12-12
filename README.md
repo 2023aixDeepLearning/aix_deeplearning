@@ -946,7 +946,7 @@ Markowitz 모델과 머신러닝, 딥러닝 모델을 결합한 모델을 이용
       문서진 : ARIMA 모델 관련 정보 조사, 마크다운 작성, 참고문헌 정리
       박진수 : GRU(게이트 순환 유닛) 관련 정보 조사, 마크다운 작성 및 문법 정리, 깃허브 버전 관리   
       이윤영 :
-      이예성 :
+      이예성 : XGBoost 모델 관련 정보 조사, 발표
 
 ### 참고 문헌
 [1] Peng Chuyin, Mo Zhengma, Zhang Xinyu, A Study of Wordle Reported Outcome Data Based on ARIMA-XGBoost Model, IEEE, 774-779 Aug, 2023  
