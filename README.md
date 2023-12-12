@@ -534,7 +534,7 @@ SK텔레콤       0.061281
 S-Oil      -0.030788
 KT          0.003466
 dtype: float64
-mean of s : 
+mean of actual returns : 
 -1.3333237596424146%
 ```
 
